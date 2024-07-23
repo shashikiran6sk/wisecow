@@ -38,10 +38,12 @@ jobs:
         chmod +x ./kubectl
         sudo mv ./kubectl /usr/local/bin/kubectl
         kubectl version --client
-
-    - name: Setup Kubeconfig
-      run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
+    - name: Set up Kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "$KUBECONFIG" > $HOME/.kube/config
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
     - name: Deploy to Kubernetes
       run: |
         sudo apt-get update
