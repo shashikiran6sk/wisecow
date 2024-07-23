@@ -29,14 +29,28 @@ jobs:
     - name: Verify Pushed Image
       run: docker pull carzsk/wisecow:latest  # Replace with your Docker Hub username and repository
 
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@master
+    - name: Checkout code and deploy to k8s
+      uses: actions/checkout@v2
+
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v1
       with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          sudo docker pull carzsk/wisecow:latest
-          sudo docker stop web-app || true
-          sudo docker rm web-app || true
-          sudo docker run -d --name web-app -p 4499:4499 carzsk/wisecow:latest
+        version: 'latest'
+
+    - name: Setup Kubeconfig
+      run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+    - name: Deploy to Kubernetes
+      run: |
+        sudo apt-get update
+        sudo apt-get install gnupg
+        curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+        sudo apt-get install apt-transport-https --yes
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+        sudo apt-get update
+        sudo apt-get install helm
+        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+        helm repo update
+        helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+
+        kubectl apply -f complete.yml
