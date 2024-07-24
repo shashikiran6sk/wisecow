@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get clean
 
 # Copy the script into the container
-# Hello hello 
+
 COPY wisecow.sh /usr/local/bin/wisecow.sh
 
 # Convert line endings from CRLF to LF and make the script executable
