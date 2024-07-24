@@ -53,3 +53,8 @@ spec:
             name: wisecow-service
             port:
               number: 4499
+  tls:
+  - hosts:
+    - your-domain.com
+    secretName: wisecow-tls
+

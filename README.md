@@ -1,28 +1,41 @@
-# Cow wisdom web server
+# WiseCow Project
+
+## Overview
+The WiseCow project is a simple server that serves wisdom (quotes) on a specified port. It uses the `cowsay` and `fortune` utilities to generate and serve the wisdom.
 
 ## Prerequisites
+The project requires the following utilities:
+- `cowsay`
+- `fortune`
 
-```
-sudo apt install fortune-mod cowsay -y
-```
+You can install these utilities using the following command:
 
-## How to use?
+`sudo apt update`
+`sudo apt install fortune-mod cowsay -y`
 
-1. Run `./wisecow.sh`
-2. Point the browser to server port (default 4499)
+Usage
+To use the project, run the wisecow.sh script:
 
-## What to expect?
-![wisecow](https://github.com/nyrahul/wisecow/assets/9133227/8d6bfde3-4a5a-480e-8d55-3fef60300d98)
+`./wisecow.sh`
 
-# Problem Statement
-Deploy the wisecow application as a k8s app
+Then, point your browser to the server port (default is 4499).
 
-## Requirement
-1. Create Dockerfile for the image and corresponding k8s manifest to deploy in k8s env. The wisecow service should be exposed as k8s service.
-2. Github action for creating new image when changes are made to this repo
-3. [Challenge goal]: Enable secure TLS communication for the wisecow app.
+Docker and GitHub Actions
+The project includes a Dockerfile for building a Docker image of the project.
 
-## Expected Artifacts
-1. Github repo containing the app with corresponding dockerfile, k8s manifest, any other artifacts needed.
-2. Github repo with corresponding github action.
-3. Github repo should be kept private and the access should be enabled for following github IDs: nyrahul, SujithKasireddy
+`docker build -t wisecow .`
+
+`docker run -d -p 4499:4499 wisecow`
+
+It also includes GitHub Actions workflows for building the Docker image, deploying it to Docker Hub, and deploying it to a Kubernetes cluster.
+
+Github secrets 
+
+`DOCKER_USERNAME`
+
+`DOCKER_PASSWORD`
+
+`KUBECONFIG`
+
+Additional Scripts
+The repository also includes additional scripts for system health monitoring ``(system_health_monitor.sh)`` and log file analysis ``(log_file_analyzer.sh).``
